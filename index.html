@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حكام الجزائر عبر التاريخ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            direction: rtl;
+        }
+        header {
+            background-color: #006233;
+            color: white;
+            padding: 20px;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .flag {
+            width: 150px;
+            margin: 20px auto;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #006233;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004d26;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        footer a {
+            color: #006233;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>حكام الجزائر عبر التاريخ</h1>
+    </header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Algeria.svg" alt="علم الجزائر" class="flag">
+    <div class="container">
+        <input type="number" id="yearInput" placeholder="أدخل السنة">
+        <button onclick="findRuler()">ابحث</button>
+        <div class="result" id="result"></div>
+    </div>
+    <footer>
+        *الموقع يعطي حكام الجزائر منذ العهد الأموي<br>
+        إذا وجدتم أي خطأ في الموقع سواء تقني أو تاريخي تواصل على إكس (تويتر سابقا) <a href="https://twitter.com/mowatndz" target="_blank">@mowatndz</a>
+    </footer>
+
+    <script>
+        // قائمة الحكام - يمكنك إضافة الحكام هنا يدوياً
+        const rulers = [
+         // مثال:
+         { start: 665, end: 667, state: "الدولة الأموية", capital: "دمشق", ruler: "عقبة بن نافع (الفترة الأولى)" },
+{ start: 682, end: 683, state: "الدولة الأموية", capital: "دمشق", ruler: "عقبة بن نافع (الفترة الثانية)" },
+{ start: 667, end: 668, state: "الدولة الأموية", capital: "دمشق", ruler: "أبو المهاجر دينار" },
+{ start: 693, end: 703, state: "الدولة الأموية", capital: "دمشق", ruler: "حسان بن النعمان" },
+{ start: 703, end: 712, state: "الدولة الأموية", capital: "دمشق", ruler: "موسى بن نصير" },
+{ start: 712, end: 714, state: "الدولة الأموية", capital: "دمشق", ruler: "عبد العزيز بن موسى" },
+{ start: 717, end: 720, state: "الدولة الأموية", capital: "دمشق", ruler: "إسماعيل بن عبيد الله بن أبي المهاجر" },
+{ start: 720, end: 723, state: "الدولة الأموية", capital: "دمشق", ruler: "محمد بن يزيد" },
+{ start: 723, end: 741, state: "الدولة الأموية", capital: "دمشق", ruler: "يزيد بن أبي مسلم" },
+{ start: 734, end: 741, state: "الدولة الأموية", capital: "دمشق", ruler: "عبيد الله بن الحبحاب" },
+{ start: 741, end: 745, state: "الدولة الأموية", capital: "دمشق", ruler: "عبد الرحمن بن حبيب الفهري" },
+{ start: 745, end: 752, state: "الدولة الأموية", capital: "دمشق", ruler: "عبد الرحمن بن عثمان الفهري" },
+
+     { start: 776, end: 784, state: "الدولة الرستمية", capital: "تيارت", ruler: "عبد الرحمن بن رستم" },
+{ start: 784, end: 832, state: "الدولة الرستمية", capital: "تيارت", ruler: "عبد الوهاب بن عبد الرحمن" },
+{ start: 832, end: 872, state: "الدولة الرستمية", capital: "تيارت", ruler: "أفلح بن عبد الوهاب" },
+{ start: 872, end: 883, state: "الدولة الرستمية", capital: "تيارت", ruler: "أبو بكر بن أفلح" },
+{ start: 883, end: 897, state: "الدولة الرستمية", capital: "تيارت", ruler: "يعقوب بن أفلح" },
+{ start: 897, end: 909, state: "الدولة الرستمية", capital: "تيارت", ruler: "يقظان بن محمد" }, 
+{ start: 973, end: 983, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "بلقين بن زيري" },
+{ start: 983, end: 995, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "المنصور بن بلقين" },
+{ start: 995, end: 1016, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "باديس بن المنصور" },
+{ start: 1016, end: 1062, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "المعز بن باديس" },
+{ start: 1062, end: 1108, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "تميم بن المعز" },
+{ start: 1108, end: 1116, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "يحيى بن تميم" },
+{ start: 1116, end: 1121, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "علي بن يحيى" },
+{ start: 1121, end: 1152, state: "الدولة الزيرية", capital: "آشير (المدية) والقيروان", ruler: "الحسن بن علي" },   
+  { start: 1007, end: 1028, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "حماد بن بلكين" },
+{ start: 1028, end: 1054, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "القائد بن حماد" },
+{ start: 1054, end: 1055, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "محسن بن القائد" },
+{ start: 1055, end: 1062, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "بلكين بن محمد" },
+{ start: 1062, end: 1088, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "الناصر بن علناس" },
+{ start: 1088, end: 1104, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "المنصور بن الناصر" },
+{ start: 1104, end: 1105, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "باديس بن المنصور" },
+{ start: 1105, end: 1121, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "عبد العزيز بن المنصور" },
+{ start: 1121, end: 1152, state: "الدولة الحمادية", capital: "المسيلة وبجاية", ruler: "يحيى بن عبد العزيز" },
+{ start: 1235, end: 1283, state: "الدولة الزيانية", capital: "تلمسان", ruler: "يغمراسن بن زيان" },
+{ start: 1283, end: 1303, state: "الدولة الزيانية", capital: "تلمسان", ruler: "عثمان بن يغمراسن" },
+{ start: 1303, end: 1308, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو زيان الأول محمد بن عثمان" },
+{ start: 1308, end: 1318, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو حمو موسى الأول بن عثمان" },
+{ start: 1318, end: 1337, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو تاشفين الأول عبد الرحمن بن موسى" },
+{ start: 1348, end: 1352, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو سعيد عثمان الثاني" },
+{ start: 1352, end: 1352, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو ثابت الأول" },
+{ start: 1359, end: 1389, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو حمو موسى الثاني" },
+{ start: 1389, end: 1393, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو تاشفين الثاني" },
+{ start: 1393, end: 1393, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو ثابت الثاني" },
+{ start: 1393, end: 1394, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو الحجاج الأول" },
+{ start: 1394, end: 1399, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو زيان الثاني" },
+{ start: 1399, end: 1402, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو محمد الأول" },
+{ start: 1402, end: 1411, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله الأول" },
+{ start: 1411, end: 1412, state: "الدولة الزيانية", capital: "تلمسان", ruler: "عبد الرحمن بن أبي عبد الله" },
+{ start: 1412, end: 1412, state: "الدولة الزيانية", capital: "تلمسان", ruler: "السعيد بن أبي حمو" },
+{ start: 1412, end: 1424, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو مالك عبد الواحد" },
+{ start: 1424, end: 1428, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله الثاني" },
+{ start: 1428, end: 1430, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو مالك عبد الواحد" },
+{ start: 1430, end: 1431, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله الثاني" },
+{ start: 1431, end: 1461, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو العباس أحمد" },
+{ start: 1461, end: 1468, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله الثالث" },
+{ start: 1468, end: 1468, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو تاشفين الثالث" },
+{ start: 1468, end: 1504, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله الرابع" },
+{ start: 1504, end: 1517, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله الخامس" },
+{ start: 1517, end: 1527, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو حمو الثالث" },
+{ start: 1527, end: 1540, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله السادس" },
+{ start: 1540, end: 1543, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو زيان الثالث" },
+{ start: 1543, end: 1544, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو عبد الله السادس" },
+{ start: 1544, end: 1550, state: "الدولة الزيانية", capital: "تلمسان", ruler: "أبو زيان الثالث" },
+{ start: 1550, end: 1555, state: "الدولة الزيانية", capital: "تلمسان", ruler: "الحسن بن أبي محمد" },
+{ start: 1659, end: 1660, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "خليل آغا" },
+{ start: 1660, end: 1661, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "رمضان آغا" },
+{ start: 1661, end: 1665, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "شعبان آغا" },
+{ start: 1665, end: 1671, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "علي آغا" },
+{ start: 1671, end: 1682, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "محمد الطويل" },
+{ start: 1682, end: 1683, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "بابا حسن" },
+{ start: 1683, end: 1688, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "حسين ميزو مورتو" },
+{ start: 1688, end: 1695, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "إبراهيم دالي" },
+{ start: 1695, end: 1698, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "شعبان دالي" },
+{ start: 1698, end: 1699, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "أحمد دالي" },
+{ start: 1699, end: 1699, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "حسن شوش" },
+{ start: 1699, end: 1705, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "مصطفى دالي" },
+{ start: 1705, end: 1707, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "حسين شاوش" },
+{ start: 1707, end: 1710, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "محمد بكتاش" },
+{ start: 1710, end: 1710, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "دالي إبراهيم" },
+{ start: 1710, end: 1718, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "بابا علي شاوش" },
+{ start: 1718, end: 1724, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "محمد بن حسن" },
+{ start: 1724, end: 1733, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "عبد الرحمن دالي" },
+{ start: 1733, end: 1745, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "بابا إبراهيم" },
+{ start: 1745, end: 1748, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "محمد بن زبير" },
+{ start: 1748, end: 1754, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "مصطفى باشا" },
+{ start: 1754, end: 1766, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "بابا علي" },
+{ start: 1766, end: 1791, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "محمد بن عثمان باشا" },
+{ start: 1791, end: 1798, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "حسن باشا" },
+{ start: 1798, end: 1805, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "مصطفى باشا" },
+{ start: 1805, end: 1808, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "أحمد خوجة" },
+{ start: 1808, end: 1809, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "علي بن محمد" },
+{ start: 1809, end: 1815, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "الحاج علي" },
+{ start: 1815, end: 1815, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "محمد خزناجي" },
+{ start: 1815, end: 1817, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "عمر آغا" },
+{ start: 1817, end: 1818, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "علي خوجة" },
+{ start: 1818, end: 1830, state: "إيالة الجزائر", capital: "مدينة الجزائر", ruler: "حسين خوجة" },
+{ start: 1832, end: 1847, state: "دولة الأمير عبد القادر", capital: "معسكر", ruler: "الأمير عبد القادر" },
+{ start: 1958, end: 1961, state: "الحكومة الجزائرية المؤقتة", capital: ".", ruler: "فرحات عباس" },
+{ start: 1961, end: 1962, state: "الحكومة الجزائرية المؤقتة", capital: ".", ruler: "بن يوسف بن خدة" },
+{ start: 1962, end: 1962, state: "الهيئة التنفيذية المؤقتة", capital: ".", ruler: "عبد الرحمن فارس" },
+{ start: 1963, end: 1965, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "أحمد بن بلة" },
+{ start: 1965, end: 1978, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "هواري بومدين" },
+{ start: 1978, end: 1979, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "رابح بيطاط" },
+{ start: 1979, end: 1992, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "الشاذلي بن جديد" },
+{ start: 1992, end: 1992, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "محمد بوضياف" },
+{ start: 1992, end: 1994, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "علي كافي" },
+{ start: 1994, end: 1999, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "اليامين زروال" },
+{ start: 1999, end: 2019, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد العزيز بوتفليقة" },
+{ start: 2019, end: 2019, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد القادر بن صالح" },
+{ start: 2019, end: null, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد المجيد تبون" },
+            // أضف المزيد من الحكام هنا...
+        ];
+
+        function findRuler() {
+            const year = parseInt(document.getElementById("yearInput").value);
+            const resultDiv = document.getElementById("result");
+            let found = false;
+
+            for (const ruler of rulers) {
+                if (year >= ruler.start && year <= ruler.end) {
+                    resultDiv.innerHTML = `
+                        الدولة: ${ruler.state}<br>
+                        الحاكم: ${ruler.ruler}<br>
+                        العاصمة: ${ruler.capital}
+                    `;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                resultDiv.innerHTML = "لم يتم العثور على معلومات عن هذه السنة.";
+            }
+        }
+    </script>
+    
+</body>
+</html>
