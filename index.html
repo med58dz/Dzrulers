@@ -71,21 +71,34 @@
     </style>
 </head>
 <body>
+  <br>
+  <p id="datetime"></p>
     <header>
         <h1>حكام الجزائر عبر التاريخ</h1>
     </header>
     <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Algeria.svg" alt="علم الجزائر" class="flag">
+    
     <div class="container">
         <input type="number" id="yearInput" placeholder="أدخل السنة">
         <button onclick="findRuler()">ابحث</button>
         <div class="result" id="result"></div>
     </div>
+"الجزائر وطنٌ حُرٌ، لا يفرط في سيادته ولا في كرامته."
+
+
     <footer>
         *الموقع يعطي حكام الجزائر منذ العهد الأموي<br>
         إذا وجدتم أي خطأ في الموقع سواء تقني أو تاريخي تواصل على إكس (تويتر سابقا) <a href="https://twitter.com/mowatndz" target="_blank">@mowatndz</a>
     </footer>
 
     <script>
+      function updateDateTime() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+    document.getElementById("datetime").innerText = now.toLocaleDateString("ar-DZ", options);
+}
+
+setInterval(updateDateTime, 1000);
         // قائمة الحكام - يمكنك إضافة الحكام هنا يدوياً
         const rulers = [
          // مثال:
@@ -201,7 +214,7 @@
 { start: 1994, end: 1999, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "اليامين زروال" },
 { start: 1999, end: 2019, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد العزيز بوتفليقة" },
 { start: 2019, end: 2019, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد القادر بن صالح" },
-{ start: 2019, end: null, state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد المجيد تبون" },
+{ start: 2019, end: new Date().getFullYear(), state: "الجمهورية الجزائرية", capital: "مدينة الجزائر", ruler: "عبد المجيد تبون" },
             // أضف المزيد من الحكام هنا...
         ];
 
@@ -226,6 +239,7 @@
                 resultDiv.innerHTML = "لم يتم العثور على معلومات عن هذه السنة.";
             }
         }
+        
     </script>
     
 </body>
